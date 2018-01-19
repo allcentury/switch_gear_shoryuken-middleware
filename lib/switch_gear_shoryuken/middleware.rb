@@ -30,7 +30,9 @@ module SwitchGearShoryuken
       fail_msg += "  Jobs will try again in: #{retry_in} seconds"
       Shoryuken.logger.warn fail_msg
       # need to think about this more, what if this exceedes visbility_timeout?
-      sleep retry_in
+      # we're not sleeping here because we want the worker to pick up other work
+      # that might not have a breaker.  Visibility timeout will eventually put this
+      # message back on the queue for us.
     end
   end
 end

@@ -24,8 +24,24 @@ end
 
 The pattern is basically to create a breaker for every worker you need them for.  You pass an array of breakers to the middleware and that's it.  
 
-If you're wondering how it works, Shoryuken provides the worker class to the middleware which we then use to look up the breaker in a hash.  
+Here's how works:
 
+1.  Failure limit is set to 3 in initializer for MyWorker
+2.  Shoryuken pulls N messages off queue for MyWorker, MyWorker2, etc
+3.  If 3 failures happen on MyWorker the circuit opens
+4.  Those failures mean we never `sqs.delete_message` so after a while they are back visible on the queue
+5.  The workers continue to run and if it gets another message for MyWorker it prevents the job from running until the reset_timeout has lapsed
+6.  Once the reset_timeout has lapsed it let's one message through, if that fails the breaker goes back to open
+
+#### Mappings
+
+There's an internal hash that keeps a list of which breaker maps to which worker.  It needs to include the full namespace:
+
+```ruby
+{
+  MyModule::MyWorker => mybreaker
+}
+```
 
 
 ## Dependencies

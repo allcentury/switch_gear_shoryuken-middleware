@@ -44,8 +44,7 @@ RSpec.describe SwitchGearShoryuken::Middleware do
 
     it 're-enqueues a job ' do
       allow(redis).to receive(:get).with(/state/).and_return("open")
-      allow(breaker).to receive(:check_reset_timeout)
-      expect(middleware).to receive(:sleep).with(reset_timeout)
+      expect(breaker).to receive(:check_reset_timeout)
       middleware.call(worker, queue, msg, body) do
         'running job...'
       end
