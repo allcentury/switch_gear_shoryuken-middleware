@@ -11,7 +11,7 @@ module SwitchGearShoryuken
     end
 
     def to_s
-      <<~EOF
+      <<-EOF
         [SwitchGearShoryuken::Breaker] - Breaker config
         namespace: #{namespace}
         logger: #{logger}
