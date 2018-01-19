@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Anthony Ross"]
   spec.email         = ["anthony.s.ross@gmail.com"]
 
-  spec.summary       = %q{Simple middleware for Shoryuken}
-  spec.description   = %q{Simple middleware for Shoryuken}
-  spec.homepage      = "https://www.github.com"
+  spec.summary       = %q{Circuit breaker middleware for Shoryuken}
+  spec.description   = %q{Circuit breaker middleware for Shoryuken}
+  spec.homepage      = "https://github.com/allcentury/switch_gear_shoryuken-middleware"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
