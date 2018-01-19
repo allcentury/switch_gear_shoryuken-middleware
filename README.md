@@ -9,7 +9,7 @@ breaker = SwitchGearShoryuken::Breaker.new do |b|
   b.client = Redis.new || SomeConnectionPool.checkout_redis_client
   b.worker = MyModule::MyWorker
   b.failure_limit = 2 # how many failures before we trip?
-  b.reset_timeout = 10 # how long do we idle for?  This value should likely NOT exceed your visability timeout
+  b.reset_timeout = 10 # how long do we idle for?  This value should likely NOT exceed your visibility timeout
   b.logger = Rails.logger || Logger.new(STDOUT)
   b.circuit = ->(job_block) { job_block.call } # nothing to do here
 end
