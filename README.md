@@ -1,8 +1,42 @@
 # SwitchGearShoryuken::Middleware
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/switch_gear_shoryuken/middleware`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem is the middleware to use SwitchGear with Shoryuken.  It allows you to specify circuit breakers for each worker class you have with it's own config.  You should configure it like so:
 
-TODO: Delete this and the text above, and describe your gem
+```ruby
+# config/intializers/switch_gear.rb
+
+breaker = SwitchGearShoryuken::Breaker.new do |b|
+  b.client = Redis.new || SomeConnectionPool.checkout_redis_client
+  b.worker = MyModule::MyWorker
+  b.failure_limit = 2 # how many failures before we trip?
+  b.reset_timeout = 10 # how long do we idle for?
+  b.logger = Rails.logger || Logger.new(STDOUT)
+  b.circuit = ->(job_block) { job_block.call } # nothing to do here
+end
+
+# add the middleware to Shoryuken
+Shoryuken.configure_server do |config|
+  config.server_middleware do |chain|
+    chain.add SwitchGearShoryuken::Middleware, breakers: [breaker]
+  end
+end
+```
+
+The pattern is basically to create a breaker for every worker you need them for.  You pass an array of breakers to the middleware and that's it.  
+
+If you're wondering how it works, Shoryuken provides the worker class to the middleware which we then use to look up the breaker in a hash.  
+
+
+
+## Dependencies
+
+You can run this with SwitchGear's in memory breaker but the examples all use redis.  There is no gem dependency on redis but tested it via redis-rb.  SwitchGear will ensure the right methods exist on your redis client before instantiation.
+
+
+## Try before you buy
+If want to see what this looks like, I've created an [example](examples/local_example.rb).  There are some set up instructions in that file but once set up, you can run:
+
+ `bundle exec shoryuken -q my_queue -r ./examples/local_example.rb`.
 
 ## Installation
 
@@ -19,10 +53,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install switch_gear_shoryuken-middleware
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 

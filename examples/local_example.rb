@@ -3,6 +3,9 @@
 # run git clone git@github.com:spulec/moto.git
 # cd moto
 # make init
+# moto_server sqs -p 4576
+#
+# start redis
 
 require 'redis'
 require 'logger'
@@ -10,6 +13,7 @@ require 'shoryuken'
 require 'aws-sdk-sqs'
 require 'pry'
 require_relative '../lib/switch_gear_shoryuken/middleware'
+
 aws_client = Aws::SQS::Client.new(
     region: ENV["AWS_REGION"] || "us-east-1",
     access_key_id: ENV["AWS_ACCESS_KEY_ID"] || "abc",
@@ -57,7 +61,6 @@ end
 
 queue = aws_client.create_queue(queue_name: 'my_queue')
 puts queue.queue_url
-
 
 50.times do
   MyModule::MyWorker.perform_async('test')
