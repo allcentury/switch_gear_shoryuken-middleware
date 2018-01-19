@@ -1,6 +1,6 @@
 # SwitchGearShoryuken::Middleware
 
-This gem is the middleware to use SwitchGear with Shoryuken.  It allows you to specify circuit breakers for each worker class you have with it's own config.  You should configure it like so:
+This gem provides a middleware to use SwitchGear with Shoryuken.  It allows you to specify circuit breakers for each worker class and define its own config.  You can configure it like so:
 
 ```ruby
 # config/intializers/switch_gear.rb
